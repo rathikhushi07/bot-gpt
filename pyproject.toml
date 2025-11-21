@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "test-python-app"
+version = "1.0.0"
+description = "Test Python Application"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/test/python"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+addopts = "-v --cov=src/main/python --cov-report=html"
+
+
+
