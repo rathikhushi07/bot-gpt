@@ -27,13 +27,7 @@
 - ✅ Optimized for production
 - ✅ Health checks included
 
-#### 5. CI/CD Pipeline
-- ✅ GitHub Actions workflow
-- ✅ Automated testing
-- ✅ Docker build and test
-- ✅ Security scanning
-
-#### 6. Unit Tests
+#### 5. Unit Tests
 - ✅ Comprehensive unit tests (15+ test cases)
 - ✅ Integration tests (20+ test cases)
 - ✅ Pytest configuration with coverage
@@ -44,10 +38,6 @@
 
 ```
 test-python-app/
-├── .github/
-│   └── workflows/
-│       ├── ci-cd.yml              # Main CI/CD pipeline
-│       └── docker-publish.yml     # Docker registry publishing
 ├── src/
 │   ├── main/python/test_python_app/
 │   │   ├── app.py                 # Application entry point
@@ -157,12 +147,6 @@ test-python-app/
    - ✅ 20+ integration tests
    - ✅ Test fixtures
    - ✅ Coverage reporting
-
-6. **CI/CD**
-   - ✅ Automated testing
-   - ✅ Docker build & test
-   - ✅ Security scanning
-   - ✅ Multi-version Python testing
 
 ---
 
@@ -397,7 +381,6 @@ pytest
 | Scalability Plan | ✅ Complete | In ARCHITECTURE.md |
 | GitHub Repo | ✅ Ready | Clean structure |
 | Dockerfile | ✅ Complete | Multi-stage |
-| CI/CD | ✅ Complete | GitHub Actions |
 | Unit Tests | ✅ Complete | 15+ tests |
 | Documentation | ✅ Complete | README + guides |
 
@@ -529,7 +512,7 @@ This project demonstrates:
 - ✅ Production-ready code practices
 - ✅ Comprehensive documentation
 - ✅ Testing discipline
-- ✅ DevOps capabilities (Docker, CI/CD)
+- ✅ DevOps capabilities (Docker)
 
 **Ready for:** Technical interview, code review, deployment discussion
 
