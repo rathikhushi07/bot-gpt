@@ -23,7 +23,7 @@ def client():
 @pytest.fixture(scope="module")
 def test_user(client):
     response = client.post(
-        "/api/v1/users",
+        "/api/users",
         json={
             "username": "testuser",
             "email": "test@example.com"
@@ -36,7 +36,7 @@ def test_user(client):
 @pytest.fixture(scope="module")
 def test_document(client, test_user):
     response = client.post(
-        "/api/v1/documents",
+        "/api/documents",
         json={
             "user_id": test_user["id"],
             "filename": "test.txt",
@@ -71,7 +71,7 @@ class TestUserEndpoints:
     
     def test_create_user(self, client):
         response = client.post(
-            "/api/v1/users",
+            "/api/users",
             json={
                 "username": "newuser",
                 "email": "newuser@example.com"
@@ -85,7 +85,7 @@ class TestUserEndpoints:
     
     def test_create_user_duplicate_username(self, client, test_user):
         response = client.post(
-            "/api/v1/users",
+            "/api/users",
             json={
                 "username": test_user["username"],
                 "email": "another@example.com"
@@ -94,21 +94,21 @@ class TestUserEndpoints:
         assert response.status_code == 400
     
     def test_list_users(self, client, test_user):
-        response = client.get("/api/v1/users")
+        response = client.get("/api/users")
         assert response.status_code == 200
         users = response.json()
         assert isinstance(users, list)
         assert len(users) > 0
     
     def test_get_user(self, client, test_user):
-        response = client.get(f"/api/v1/users/{test_user['id']}")
+        response = client.get(f"/api/users/{test_user['id']}")
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == test_user["id"]
         assert data["username"] == test_user["username"]
     
     def test_get_nonexistent_user(self, client):
-        response = client.get("/api/v1/users/nonexistent-id")
+        response = client.get("/api/users/nonexistent-id")
         assert response.status_code == 404
 
 
@@ -116,7 +116,7 @@ class TestDocumentEndpoints:
     
     def test_upload_document(self, client, test_user):
         response = client.post(
-            "/api/v1/documents",
+            "/api/documents",
             json={
                 "user_id": test_user["id"],
                 "filename": "doc.txt",
@@ -131,14 +131,14 @@ class TestDocumentEndpoints:
         assert "id" in data
     
     def test_list_documents(self, client, test_user, test_document):
-        response = client.get(f"/api/v1/documents?user_id={test_user['id']}")
+        response = client.get(f"/api/documents?user_id={test_user['id']}")
         assert response.status_code == 200
         documents = response.json()
         assert isinstance(documents, list)
         assert len(documents) > 0
     
     def test_get_document(self, client, test_document):
-        response = client.get(f"/api/v1/documents/{test_document['id']}")
+        response = client.get(f"/api/documents/{test_document['id']}")
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == test_document["id"]
@@ -146,7 +146,7 @@ class TestDocumentEndpoints:
     
     def test_delete_document(self, client, test_user):
         create_response = client.post(
-            "/api/v1/documents",
+            "/api/documents",
             json={
                 "user_id": test_user["id"],
                 "filename": "to-delete.txt",
@@ -156,10 +156,10 @@ class TestDocumentEndpoints:
         )
         doc_id = create_response.json()["id"]
         
-        delete_response = client.delete(f"/api/v1/documents/{doc_id}")
+        delete_response = client.delete(f"/api/documents/{doc_id}")
         assert delete_response.status_code == 204
         
-        get_response = client.get(f"/api/v1/documents/{doc_id}")
+        get_response = client.get(f"/api/documents/{doc_id}")
         assert get_response.status_code == 404
 
 
@@ -167,7 +167,7 @@ class TestConversationEndpoints:
     
     def test_create_open_chat_conversation(self, client, test_user):
         response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": test_user["id"],
                 "first_message": "Hello, how are you?",
@@ -183,7 +183,7 @@ class TestConversationEndpoints:
     
     def test_create_rag_conversation(self, client, test_user, test_document):
         response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": test_user["id"],
                 "first_message": "What is Python used for?",
@@ -197,7 +197,7 @@ class TestConversationEndpoints:
         assert "message" in data
     
     def test_list_conversations(self, client, test_user):
-        response = client.get(f"/api/v1/conversations?user_id={test_user['id']}&page=1&page_size=10")
+        response = client.get(f"/api/conversations?user_id={test_user['id']}&page=1&page_size=10")
         assert response.status_code == 200
         data = response.json()
         assert "items" in data
@@ -207,7 +207,7 @@ class TestConversationEndpoints:
     
     def test_get_conversation_detail(self, client, test_user):
         create_response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": test_user["id"],
                 "first_message": "Test message",
@@ -216,7 +216,7 @@ class TestConversationEndpoints:
         )
         conv_id = create_response.json()["conversation_id"]
         
-        response = client.get(f"/api/v1/conversations/{conv_id}")
+        response = client.get(f"/api/conversations/{conv_id}")
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == conv_id
@@ -225,7 +225,7 @@ class TestConversationEndpoints:
     
     def test_add_message_to_conversation(self, client, test_user):
         create_response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": test_user["id"],
                 "first_message": "Hello",
@@ -235,7 +235,7 @@ class TestConversationEndpoints:
         conv_id = create_response.json()["conversation_id"]
         
         response = client.post(
-            f"/api/v1/conversations/{conv_id}/messages",
+            f"/api/conversations/{conv_id}/messages",
             json={
                 "content": "Tell me more"
             }
@@ -247,7 +247,7 @@ class TestConversationEndpoints:
     
     def test_delete_conversation(self, client, test_user):
         create_response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": test_user["id"],
                 "first_message": "To be deleted",
@@ -256,10 +256,10 @@ class TestConversationEndpoints:
         )
         conv_id = create_response.json()["conversation_id"]
         
-        delete_response = client.delete(f"/api/v1/conversations/{conv_id}")
+        delete_response = client.delete(f"/api/conversations/{conv_id}")
         assert delete_response.status_code == 204
         
-        get_response = client.get(f"/api/v1/conversations/{conv_id}")
+        get_response = client.get(f"/api/conversations/{conv_id}")
         assert get_response.status_code == 404
 
 
@@ -267,7 +267,7 @@ class TestErrorHandling:
     
     def test_create_conversation_nonexistent_user(self, client):
         response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": "nonexistent-user-id",
                 "first_message": "Hello",
@@ -278,7 +278,7 @@ class TestErrorHandling:
     
     def test_add_message_to_nonexistent_conversation(self, client):
         response = client.post(
-            "/api/v1/conversations/nonexistent-id/messages",
+            "/api/conversations/nonexistent-id/messages",
             json={
                 "content": "Hello"
             }
@@ -287,7 +287,7 @@ class TestErrorHandling:
     
     def test_invalid_request_validation(self, client, test_user):
         response = client.post(
-            "/api/v1/conversations",
+            "/api/conversations",
             json={
                 "user_id": test_user["id"],
                 "first_message": "",

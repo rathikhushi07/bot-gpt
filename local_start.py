@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+import shutil
 from pathlib import Path
 
 def main():
@@ -14,15 +15,7 @@ def main():
     venv_dir = project_root / "venv"
     data_dir = project_root / "data"
     
-    if not venv_dir.exists():
-        print("📦 Creating virtual environment...")
-        subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
-        print("✅ Virtual environment created")
-        print()
-    else:
-        print("✅ Virtual environment exists")
-        print()
-    
+    # Determine Python executable path based on OS
     if os.name == 'nt':
         venv_python = venv_dir / "Scripts" / "python.exe"
         pip_cmd = venv_dir / "Scripts" / "pip.exe"
@@ -30,13 +23,29 @@ def main():
         venv_python = venv_dir / "bin" / "python"
         pip_cmd = venv_dir / "bin" / "pip"
     
+    # Check if virtual environment exists and is valid
+    if not venv_python.exists():
+        if venv_dir.exists():
+            print("⚠️  Virtual environment appears corrupted or incomplete")
+            print("📦 Recreating virtual environment...")
+            shutil.rmtree(venv_dir)
+        else:
+            print("📦 Creating virtual environment...")
+        subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
+        print("✅ Virtual environment ready")
+        print()
+    else:
+        print("✅ Virtual environment exists")
+        print()
+    
     print("📦 Upgrading pip...")
     try:
         subprocess.run([str(venv_python), "-m", "pip", "install", "--upgrade", "pip"], 
                       check=True, capture_output=True)
         print("✅ pip upgraded")
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
         print(f"⚠️  Warning: Could not upgrade pip: {e}")
+        print("   Continuing anyway...")
     print()
     
     print("📦 Installing dependencies from requirements.txt...")

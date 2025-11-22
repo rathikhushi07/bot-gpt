@@ -106,9 +106,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(conversations.router, prefix="/api/v1")
-app.include_router(users.router, prefix="/api/v1")
-app.include_router(documents.router, prefix="/api/v1")
+app.include_router(conversations.router, prefix="/api")
+app.include_router(users.router, prefix="/api")
+app.include_router(documents.router, prefix="/api")
 app.include_router(operations.router)
 
 

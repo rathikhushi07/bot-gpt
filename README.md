@@ -62,21 +62,21 @@ Once started, access:
 ### Core Endpoints
 
 **Users**
-- `POST /api/v1/users` - Create user
-- `GET /api/v1/users` - List users
-- `GET /api/v1/users/{id}` - Get user
+- `POST /api/users` - Create user
+- `GET /api/users` - List users
+- `GET /api/users/{id}` - Get user
 
 **Conversations**
-- `POST /api/v1/conversations` - Create conversation
-- `GET /api/v1/conversations` - List with pagination
-- `GET /api/v1/conversations/{id}` - Get details
-- `POST /api/v1/conversations/{id}/messages` - Add message
-- `DELETE /api/v1/conversations/{id}` - Delete
+- `POST /api/conversations` - Create conversation
+- `GET /api/conversations` - List with pagination
+- `GET /api/conversations/{id}` - Get details
+- `POST /api/conversations/{id}/messages` - Add message
+- `DELETE /api/conversations/{id}` - Delete
 
 **Documents (RAG)**
-- `POST /api/v1/documents` - Upload document
-- `GET /api/v1/documents` - List documents
-- `DELETE /api/v1/documents/{id}` - Delete
+- `POST /api/documents` - Upload document
+- `GET /api/documents` - List documents
+- `DELETE /api/documents/{id}` - Delete
 
 ---
 
@@ -237,12 +237,12 @@ Additional documentation in `docs/`:
 
 ```bash
 # 1. Create user
-curl -X POST http://localhost:8000/api/v1/users \
+curl -X POST http://localhost:8000/api/users \
   -H "Content-Type: application/json" \
   -d '{"username": "alice", "email": "alice@example.com"}'
 
 # 2. Start conversation (use user_id from above)
-curl -X POST http://localhost:8000/api/v1/conversations \
+curl -X POST http://localhost:8000/api/conversations \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "USER_ID",
@@ -255,7 +255,7 @@ curl -X POST http://localhost:8000/api/v1/conversations \
 
 ```bash
 # 1. Upload document
-curl -X POST http://localhost:8000/api/v1/documents \
+curl -X POST http://localhost:8000/api/documents \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "USER_ID",
@@ -265,7 +265,7 @@ curl -X POST http://localhost:8000/api/v1/documents \
   }'
 
 # 2. Create RAG conversation (use document_id from above)
-curl -X POST http://localhost:8000/api/v1/conversations \
+curl -X POST http://localhost:8000/api/conversations \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "USER_ID",
